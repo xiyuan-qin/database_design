@@ -1,24 +1,12 @@
 # database
 
-## Project setup
-```
-npm install
-```
+这是山东大学计算机学院24秋数据库课程的课程设计前端代码
+## 目前实现
+1.  市场界面
+2.  管理员界面
+3.  登录界面
+4.  个人主页
+   
+后续内容继续更新
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
