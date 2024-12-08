@@ -7,17 +7,14 @@ const routes = [
   //市场的路由
   {
     path: '/market',
-    name: 'market',
     component: () => import('../views/campusMarket/marketView.vue'),
     children: [
       {
         path: 'south',
-        name: 'south',
         component: () => import('../views/campusMarket/southView.vue')
       },
       {
         path: 'north',
-        name: 'north', 
         component: () => import('../views/campusMarket/northView.vue')
       }
     ]
@@ -34,12 +31,18 @@ const routes = [
     name: 'profile',
     component: () => import('../views/profile/profileView.vue')
   },
+  //评论的路由
+  {
+    path: '/comments',
+    name: 'comments',
+    component: () => import('@/views/comments/CommentsView.vue'),
+  },
   //登录的路由
   {
     path: '/login',
     component: () => import('../views/logIn/logInView.vue')  
   },
-  //默认的路由
+  //默认的路由，重定向到登录页面
   {
     path: '/',
     redirect: '/login'
@@ -49,5 +52,7 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+
+
 
 export default router

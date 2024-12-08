@@ -1,8 +1,8 @@
 <template>
     <div class="common-layout">
         <el-container>
-            <el-header style="font-size: 40px;color: brown;font-family: SimSun;background-color: lightgray;">
-                山东大学青岛二手交易市场
+            <el-header style="background-color: lightgray;">
+                <div class="title" @click="toMarket">山东大学青岛二手交易市场</div>
                 <div class="header-right">
                     <div class="nav-item" @click="toProfile">
                         <i class="el-icon-user"></i>
@@ -55,6 +55,9 @@ export default {
         },
         toProfile() {
             this.$router.push('/profile');
+        },
+        toMarket() {
+            this.$router.push('/market');
         }
     }
 };
@@ -170,5 +173,29 @@ export default {
     padding: 8px 16px;
     font-size: 14px;
     color: #909399;
+}
+
+.title {
+    font-size: 40px;
+    color: brown;
+    font-family: SimSun;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.title:hover {
+    transform: scale(1.02);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 隐藏左侧菜单栏滚动条 */
+.el-aside::-webkit-scrollbar {
+    display: none;
+}
+
+.el-aside {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
 }
 </style>

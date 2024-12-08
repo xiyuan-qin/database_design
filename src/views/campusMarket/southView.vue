@@ -17,19 +17,18 @@
                 <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="tableData">
-            <el-table-column prop="date" label="日期" />
-            <el-table-column prop="name" label="姓名" />
-            <el-table-column prop="address" label="地址" />
-            <el-table-column prop="product" label="商品" />
-            <el-table-column prop="img" label="照片" />
-        </el-table>
+        <ImageGrid :images="imageList" />
     </el-scrollbar>
 </template>
 
 <script>
+import ImageGrid from '@/views/product/ImageGrid.vue';
+
 export default {
     name: 'SouthView',
+    components: {
+        ImageGrid
+    },
     data() {
         const item = {
             date: '2016-05-02',
@@ -45,7 +44,45 @@ export default {
                 region: '',
                 date: ''
             },
-            tableData: Array.from({ length: 20 }).fill(item)
+            tableData: Array.from({ length: 20 }).fill(item),
+            imageList: [
+                {
+                    img: 'demo.jpg',
+                    product: '电脑',
+                    name: 'Tom',
+                    address: 'No. 189, Grove St, Los Angeles',
+                    date: '2016-05-02'
+                },
+                {
+                    img: 'demo.jpg',
+                    product: '电脑',
+                    name: 'Tom',
+                    address: 'No. 189, Grove St, Los Angeles',
+                    date: '2016-05-02'
+                },
+                {
+                    img: 'demo.jpg',
+                    product: '电脑',
+                    name: 'Tom',
+                    address: 'No. 189, Grove St, Los Angeles',
+                    date: '2016-05-02'
+                },
+                {
+                    img: 'demo.jpg',
+                    product: '电脑',
+                    name: 'Tom',
+                    address: 'No. 189, Grove St, Los Angeles',
+                    date: '2016-05-02'
+                },
+                {
+                    img: 'demo.jpg',
+                    product: '电脑',
+                    name: 'Tom',
+                    address: 'No. 189, Grove St, Los Angeles',
+                    date: '2016-05-02'
+                },
+                // ...更多图片对象
+            ]
         };
     },
     methods: {
