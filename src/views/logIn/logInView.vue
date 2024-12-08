@@ -45,7 +45,7 @@ export default {
                             message: '登录成功！'
                         });
                         // 添加路由跳转到 southView
-                        this.$router.push('/market/south');
+                        this.$router.push('/market');
                     } else if (this.loginForm.username === 'admin' && this.loginForm.password === '123') {
                         this.$message({
                             type: 'success',

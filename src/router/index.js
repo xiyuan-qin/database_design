@@ -31,12 +31,6 @@ const routes = [
     name: 'profile',
     component: () => import('../views/profile/profileView.vue')
   },
-  //评论的路由
-  {
-    path: '/comments',
-    name: 'comments',
-    component: () => import('@/views/comments/CommentsView.vue'),
-  },
   //登录的路由
   {
     path: '/login',

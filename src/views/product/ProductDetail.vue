@@ -21,7 +21,21 @@
                 </div>
             </div>
         </div>
+        
+        <!-- 添加分隔线和评论区 -->
+        <el-divider></el-divider>
+        <comment-list ref="commentList" :itemId="image.id"></comment-list>
+        <comment-form 
+            :visible.sync="showCommentForm"
+            :itemId="image.id"
+            @comment-submitted="handleCommentSubmitted"
+        ></comment-form>
+        
         <span slot="footer" class="dialog-footer">
+            <el-button type="success" @click="handleComment">
+                <i class="el-icon-chat-line-round"></i>
+                发表评论
+            </el-button>
             <el-button type="primary" @click="handleContact">联系卖家</el-button>
             <el-button @click="$emit('update:visible', false)">关闭</el-button>
         </span>
@@ -29,8 +43,15 @@
 </template>
 
 <script>
+import CommentList from '../comments/CommentList.vue'
+import CommentForm from '../comments/CommentForm.vue'
+
 export default {
     name: 'ProductDetail',
+    components: {
+        CommentList,
+        CommentForm
+    },
     props: {
         image: {
             type: Object,
@@ -41,12 +62,27 @@ export default {
             required: true
         }
     },
+    data() {
+        return {
+            showCommentForm: false
+        }
+    },
     methods: {
         handleContact() {
             this.$message({
                 message: '功能开发中...',
                 type: 'info'
             });
+        },
+        handleComment() {
+            this.showCommentForm = true;
+        },
+        handleCommentSubmitted() {
+            // 刷新评论列表
+            if (this.$refs.commentList) {
+                // TODO: 实现评论列表刷新方法
+                // this.$refs.commentList.refreshComments();
+            }
         }
     }
 };
@@ -102,5 +138,19 @@ export default {
 .dialog-footer {
     text-align: right;
     margin-top: 20px;
+}
+
+/* 添加新样式 */
+:deep(.el-dialog__body) {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.el-divider {
+    margin: 20px 0;
+}
+
+.el-button i {
+    margin-right: 5px;
 }
 </style>

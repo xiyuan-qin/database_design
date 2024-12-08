@@ -30,7 +30,23 @@
                     </el-menu>
                 </el-aside>
                 <el-main>
-                    <router-view></router-view>
+                    <div v-if="$route.path === '/market'" class="welcome-container">
+                        <h1>欢迎来到山东大学二手交易平台</h1>
+                        <div class="welcome-content">
+                            <el-card class="welcome-card">
+                                <div slot="header">
+                                    <span>平台介绍</span>
+                                </div>
+                                <p>这里是山东大学青岛校区的二手交易平台，您可以：</p>
+                                <ul>
+                                    <li>浏览南区、北区的二手商品</li>
+                                    <li>发布您的闲置物品</li>
+                                    <li>与其他同学进行交易互动</li>
+                                </ul>
+                            </el-card>
+                        </div>
+                    </div>
+                    <router-view v-else></router-view>
                 </el-main>
             </el-container>
         </el-container>
@@ -57,7 +73,9 @@ export default {
             this.$router.push('/profile');
         },
         toMarket() {
-            this.$router.push('/market');
+            if (this.$route.path !== '/market') {
+                this.$router.push('/market');
+            }
         }
     }
 };
@@ -197,5 +215,49 @@ export default {
 .el-aside {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;     /* Firefox */
+}
+
+.welcome-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.welcome-container h1 {
+    color: #409EFF;
+    margin-bottom: 30px;
+    font-size: 32px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-content {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.welcome-card {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-card .el-card__header {
+    background-color: #f5f7fa;
+    font-size: 18px;
+    font-weight: bold;
+    color: #303133;
+}
+
+.welcome-card ul {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.welcome-card li {
+    margin: 10px 0;
+    color: #606266;
+    font-size: 16px;
 }
 </style>
