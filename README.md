@@ -12,12 +12,10 @@
    
 后续内容继续更新
 
-## 如何使用本项目？
-
+### 如何使用本项目？ 
 本项目基于前端**vue2脚手架**开发，引入了**elementUI**组件。为了使用本项目，您需要安装vue脚手架并应用elementUI
 您可以参考[b站黑马程序员教程](https://www.bilibili.com/video/BV1m84y1w7Tb?spm_id_from=333.788.videopod.episodes&vd_source=d244ec062eb5eb19c9bbe8e5769a0800&p=37)来安装
 您也可以根据本教程来实现。
----
 ###### 1.安装node.js
 直接在浏览器中搜索node.js，选择稳定版本下载
 ###### 2.安装vue-cli
