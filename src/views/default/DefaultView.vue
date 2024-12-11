@@ -1,7 +1,7 @@
 <template>
     <div class="common-layout">
         <el-container>
-            <el-header style="background-color: lightgray;">
+            <el-header style="background: linear-gradient(to right, #7C0A27, #B8860B);">
                 <div class="title" @click="toDefault">山东大学青岛二手交易市场</div>
                 <div class="header-right">
                     <el-button type="primary" class="login-button" @click="toLogin">
@@ -20,8 +20,8 @@
             </div>
             <el-container>
                 <!-- 添加左侧菜单栏 -->
-                <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-                    <el-menu :default-openeds="['1']">
+                <el-aside width="200px" style="background: linear-gradient(180deg, #F5E6E6 0%, #FFF5E6 100%)">
+                    <el-menu :default-openeds="['1']" class="custom-menu">
                         <el-submenu index="1">
                             <template slot="title"><i class="el-icon-menu"></i>校园集市</template>
                             <el-menu-item-group>
@@ -91,16 +91,62 @@ export default {
 
 .title {
     font-size: 40px;
-    color: brown;
-    font-family: SimSun;
+    font-family: "STXingkai", "华文行楷", SimSun;
     display: inline-block;
     cursor: pointer;
-    transition: all 0.3s;
+    padding: 10px 20px;
+    position: relative;
+    background: linear-gradient(to right, #FFD700, #FFFFFF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2),
+                -1px -1px 0 rgba(255, 255, 255, 0.2);
+    letter-spacing: 2px;
+    transition: all 0.4s ease;
+}
+
+.title::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+        rgba(139, 0, 0, 0) 0%,
+        rgba(139, 0, 0, 0.1) 50%,
+        rgba(139, 0, 0, 0) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
 }
 
 .title:hover {
-    transform: scale(1.02);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    transform: scale(1.03);
+    background: linear-gradient(to right, #FFFFFF, #FFD700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    letter-spacing: 3px;
+}
+
+.title:hover::before {
+    transform: translateX(100%);
+}
+
+.title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #FF0000, transparent);
+    transform: translateX(-50%);
+    transition: width 0.4s ease;
+}
+
+.title:hover::after {
+    width: 80%;
 }
 
 .header-right {
@@ -167,35 +213,37 @@ export default {
 }
 
 .menu-item {
-    margin: 8px 0;
-    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05));
+    margin: 10px 15px;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .menu-item:hover {
-    background-color: #f0f7ff !important;
+    background: linear-gradient(90deg, rgba(124, 10, 39, 0.1), rgba(184, 134, 11, 0.1)) !important;
 }
 
 .menu-link {
     display: block;
     text-decoration: none;
-    color: #606266;
+    color: #7C0A27;
     font-size: 16px;
     font-family: "Microsoft YaHei", sans-serif;
     padding: 8px 16px;
     border-radius: 4px;
     transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 .menu-link:hover {
-    color: #409EFF;
+    color: #7C0A27;
     font-weight: 600;
     transform: translateX(5px);
 }
 
 /* 新的登录按钮样式 */
 .login-button {
-    background: linear-gradient(45deg, #4CAF50, #2196F3);
+    background: linear-gradient(45deg, #7C0A27, #B8860B);
     border: none;
     padding: 10px 20px;
     border-radius: 25px;
@@ -211,7 +259,7 @@ export default {
 .login-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    background: linear-gradient(45deg, #45a049, #1976D2);
+    background: linear-gradient(45deg, #960C30, #DAA520);
 }
 
 .login-button i {
@@ -239,5 +287,26 @@ h2 {
     .header-right {
         flex-direction: column;
     }
+}
+
+.el-menu-item.is-active .menu-link {
+    color: #7C0A27;
+    background-color: rgba(124, 10, 39, 0.1);
+}
+
+:deep(.el-menu) {
+    border-right: none;
+    background: transparent;
+}
+
+:deep(.el-submenu__title) {
+    color: #7C0A27 !important;
+    font-weight: bold;
+}
+
+:deep(.el-menu-item-group__title) {
+    color: #B8860B;
+    font-weight: 500;
+    padding: 10px 20px;
 }
 </style>

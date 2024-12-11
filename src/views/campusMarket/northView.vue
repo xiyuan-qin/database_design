@@ -3,23 +3,25 @@
                 element-loading-text="加载中..."
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(255, 255, 255, 0.8)">
-    <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-      <el-form-item label="商品名">
-        <el-input v-model="searchForm.user" placeholder="搜索你需要的商品" clearable />
-      </el-form-item>
-      <el-form-item label="区域">
-        <el-select v-model="searchForm.region" placeholder="选择你的购买区间" clearable>
-          <el-option label="南区" value="south" />
-          <el-option label="北区" value="north" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发布时间">
-        <el-date-picker v-model="searchForm.date" type="date" placeholder="选择发布时间" clearable />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="search-wrapper">
+      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item label="商品名">
+          <el-input v-model="searchForm.user" placeholder="搜索你需要的商品" clearable />
+        </el-form-item>
+        <el-form-item label="区域">
+          <el-select v-model="searchForm.region" placeholder="选择你的购买区间" clearable>
+            <el-option label="南区" value="south" />
+            <el-option label="北区" value="north" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发布时间">
+          <el-date-picker v-model="searchForm.date" type="date" placeholder="选择发布时间" clearable />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     
     <div class="posts-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
       <PostCard
@@ -171,5 +173,20 @@ button {
 
 button:hover {
   background: #66b1ff;
+}
+
+/* 添加搜索框居中样式 */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    background-color: #f5f7fa;
+}
+
+.demo-form-inline {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 </style>
