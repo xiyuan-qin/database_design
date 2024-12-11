@@ -66,7 +66,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 localStorage.removeItem('token');
-                this.$router.push('/login');
+                this.$router.push('/default');
             }).catch(() => {});
         },
         toProfile() {

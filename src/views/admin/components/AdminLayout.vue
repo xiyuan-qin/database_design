@@ -46,7 +46,7 @@ export default {
         }).then(() => {
           // 这里可以添加清除登录状态的逻辑
           localStorage.removeItem('token');
-          this.$router.push('/login');
+          this.$router.push('/login');//
           this.$message({
             type: 'success',
             message: '已退出登录'

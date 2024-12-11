@@ -1,5 +1,8 @@
 <template>
-    <el-scrollbar>
+    <el-scrollbar class="infinite-scroll-container" v-loading="fullscreenLoading" 
+                  element-loading-text="加载中..."
+                  element-loading-spinner="el-icon-loading"
+                  element-loading-background="rgba(255, 255, 255, 0.8)">
         <el-form :inline="true" :model="searchForm" class="demo-form-inline">
             <el-form-item label="商品名">
                 <el-input v-model="searchForm.user" placeholder="搜索你需要的商品" clearable />
@@ -17,78 +20,104 @@
                 <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
         </el-form>
-        <ImageGrid :images="imageList" />
+        
+        <!-- 使用 PostCard 组件展示帖子列表 -->
+        <div class="posts-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+            <PostCard
+                v-for="post in posts"
+                :key="post.id"
+                :post="post"
+                @like="handleLike"
+                @comment="handleComment"
+            />
+            <div v-if="loading" class="loading-more">
+                <el-loading-component></el-loading-component>
+            </div>
+        </div>
     </el-scrollbar>
 </template>
 
 <script>
-import ImageGrid from '@/views/product/ImageGrid.vue';
+import PostCard from './components/PostCard.vue';  /* 修改导入路径 */
+import demoImg from '@/demoImg/demo.jpg';  // 添加这行
 
 export default {
     name: 'SouthView',
     components: {
-        ImageGrid
+        PostCard  // 注册 PostCard
     },
     data() {
-        const item = {
-            date: '2016-05-02',
-            name: 'Tom',
-            address: 'No. 189, Grove St, Los Angeles',
-            product: 'Laptop',
-            img: 'image.jpg'
-        };
-
         return {
             searchForm: {
                 user: '',
                 region: '',
                 date: ''
             },
-            tableData: Array.from({ length: 20 }).fill(item),
-            imageList: [
-                {
-                    img: 'demo.jpg',
-                    product: '电脑',
-                    name: 'Tom',
-                    address: 'No. 189, Grove St, Los Angeles',
-                    date: '2016-05-02'
-                },
-                {
-                    img: 'demo.jpg',
-                    product: '电脑',
-                    name: 'Tom',
-                    address: 'No. 189, Grove St, Los Angeles',
-                    date: '2016-05-02'
-                },
-                {
-                    img: 'demo.jpg',
-                    product: '电脑',
-                    name: 'Tom',
-                    address: 'No. 189, Grove St, Los Angeles',
-                    date: '2016-05-02'
-                },
-                {
-                    img: 'demo.jpg',
-                    product: '电脑',
-                    name: 'Tom',
-                    address: 'No. 189, Grove St, Los Angeles',
-                    date: '2016-05-02'
-                },
-                {
-                    img: 'demo.jpg',
-                    product: '电脑',
-                    name: 'Tom',
-                    address: 'No. 189, Grove St, Los Angeles',
-                    date: '2016-05-02'
-                },
-                // ...更多图片对象
-            ]
+            posts: [],
+            loading: false,
+            page: 1,
+            fullscreenLoading: false
         };
     },
     methods: {
+        // 添加加载更多帖子的方法
+        loadMore() {
+            if (this.loading) return;
+            this.loading = true;
+            // 模拟加载数据
+            setTimeout(() => {
+                const newPosts = Array(5).fill().map((_, index) => ({
+                    id: this.posts.length + index + 1,
+                    username: `用户${this.posts.length + index + 1}`,
+                    userAvatar: 'https://placeholder.com/avatar.jpg',
+                    createTime: '2023-12-01',
+                    productName: '电脑',
+                    price: 99.99,
+                    description: '这是一个商品描述...我也不要做数据库课设啊啊啊',
+                    productImage: demoImg,  // 修改这行
+                    likes: Math.floor(Math.random() * 100),
+                    isLiked: false,
+                    comments: []
+                }));
+                this.posts.push(...newPosts);
+                this.loading = false;
+                this.page++;
+            }, 1000);
+        },
+        handleLike(postId) {
+            const post = this.posts.find(p => p.id === postId);
+            if (post) {
+                post.isLiked = !post.isLiked;
+                post.likes += post.isLiked ? 1 : -1;
+            }
+        },
+        handleComment({ postId, content }) {
+            const post = this.posts.find(p => p.id === postId);
+            if (post) {
+                post.comments.push({
+                    id: Date.now(),
+                    username: '当前用户',
+                    userAvatar: 'https://placeholder.com/avatar.jpg',
+                    content: content
+                });
+            }
+        },
         onSubmit() {
             console.log('submit!');
         }
+    },
+    mounted() {
+        this.fullscreenLoading = true;
+        this.loadMore();
+        setTimeout(() => {
+            this.fullscreenLoading = false;
+        }, 1000);
+    },
+    activated() {
+        this.fullscreenLoading = true;
+        setTimeout(() => {
+            this.fullscreenLoading = false;
+        }, 1000);
     }
 };
 </script>
@@ -203,5 +232,20 @@ export default {
     padding: 8px 16px;
     font-size: 14px;
     color: #909399;
+}
+
+.infinite-scroll-container {
+    height: calc(100vh - 180px);
+}
+
+.posts-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.loading-more {
+    text-align: center;
+    margin: 20px 0;
 }
 </style>

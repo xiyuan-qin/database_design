@@ -1,10 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import DefaultView from '../views/default/DefaultView.vue';
 
 Vue.use(VueRouter)
 
 const routes = [
-  //市场的路由
+  // 新增默认路由
+  {
+    path: '/default',
+    component: DefaultView
+  },
+  // 市场的路由
   {
     path: '/market',
     component: () => import('../views/campusMarket/marketView.vue'),
@@ -19,7 +25,7 @@ const routes = [
       }
     ]
   },
-  //管理员的路由
+  // 管理员的路由
   {
     path: '/admin',
     component: () => import('@/views/admin/components/AdminLayout.vue'),
@@ -73,21 +79,21 @@ const routes = [
       }
     ]
   },
-  //个人中心的路由
+  // 个人中心的路由
   {
     path: '/profile',
     name: 'profile',
     component: () => import('../views/profile/profileView.vue')
   },
-  //登录的路由
+  // 登录的路由
   {
     path: '/login',
     component: () => import('../views/logIn/logInView.vue')  
   },
-  //默认的路由，重定向到登录页面
+  // 默认的路由，重定向到默认页面
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/default'
   }
 ]
 
