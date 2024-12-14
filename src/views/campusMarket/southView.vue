@@ -1,4 +1,5 @@
 <template>
+  <div class="south-view-container">
     <el-scrollbar class="infinite-scroll-container" v-loading="fullscreenLoading" 
                   element-loading-text="加载中..."
                   element-loading-spinner="el-icon-loading"
@@ -36,17 +37,32 @@
                 <el-loading-component></el-loading-component>
             </div>
         </div>
+        <div class="create-post-button">
+            <el-button type="primary" @click="showCreatePost">
+                <i class="el-icon-plus"></i> 发布新商品
+            </el-button>
+        </div>
     </el-scrollbar>
+    <CreatePostForm ref="createPostForm" @submit="handlePostSubmit" />
+  </div>
 </template>
 
 <script>
 import PostCard from './components/PostCard.vue';  /* 修改导入路径 */
+import CreatePostForm from './forms/CreatePostForm.vue';
 import demoImg from '@/demoImg/demo.jpg';  // 添加这行
 
 export default {
     name: 'SouthView',
+    props: {
+        isDefaultView: {
+            type: Boolean,
+            default: false
+        }
+    },
     components: {
-        PostCard  // 注册 PostCard
+        PostCard,  // 注册 PostCard
+        CreatePostForm
     },
     data() {
         return {
@@ -106,6 +122,23 @@ export default {
         },
         onSubmit() {
             console.log('submit!');
+        },
+        showCreatePost() {
+            if (this.isDefaultView) {
+                this.$message({
+                    message: '只有登录才能发布商品！',
+                    type: 'warning',
+                    duration: 2000
+                });
+            } else {
+                this.$refs.createPostForm.show();
+            }
+        },
+        handlePostSubmit(formData) {
+            if (formData.region === 'south') {
+                this.posts.unshift(formData);
+                this.$message.success('发布成功！');
+            }
         }
     },
     mounted() {
@@ -125,162 +158,88 @@ export default {
 </script>
 
 <style scoped>
-.layout-container-demo .el-header {
-    position: relative;
-    background-color: var(--el-color-primary-light-7);
-    color: var(--el-text-color-primary);
-}
-
-.layout-container-demo .el-aside {
-    color: var(--el-text-color-primary);
-    background: var(--el-color-primary-light-8);
-}
-
-.layout-container-demo .el-menu {
-    border-right: none;
-}
-
-.layout-container-demo .el-main {
-    padding: 0;
-}
-
-.layout-container-demo .toolbar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    right: 20px;
-}
-
-.demo-form-inline .el-input {
-    --el-input-width: 220px;
-}
-
-.demo-form-inline .el-select {
-    --el-select-width: 220px;
-}
-
-.el-header {
-    position: relative;
-    padding: 0 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
-}
-
-.header-right {
-    float: right;
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.nav-item {
-    padding: 0 20px;
-    height: 32px;
-    line-height: 32px;
-    font-size: 14px;
-    color: #409EFF;
-    cursor: pointer;
-    margin-right: 15px;
-    background: rgba(64, 158, 255, 0.1);
-    border-radius: 16px;
-    transition: all 0.3s;
-}
-
-.nav-item:hover {
-    background: #409EFF;
-    color: white;
-}
-
-.nav-item i {
-    margin-right: 5px;
-}
-
-.menu-item {
-    margin: 8px 0;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-.menu-item:hover {
-    background-color: #f0f7ff !important;
-}
-
-.menu-link {
-    display: block;
-    text-decoration: none;
-    color: #606266;
-    font-size: 16px;
-    font-family: "Microsoft YaHei", sans-serif;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.menu-link:hover {
-    color: #409EFF;
-    font-weight: 600;
-    transform: translateX(5px);
-}
-
-/* 激活状态的样式 */
-.el-menu-item.is-active .menu-link {
-    color: #409EFF;
-    font-weight: 600;
-    background-color: #ecf5ff;
-}
-
-/* 修改子菜单组的样式 */
-.el-menu-item-group__title {
-    padding: 8px 16px;
-    font-size: 14px;
-    color: #909399;
+.south-view-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .infinite-scroll-container {
-    height: calc(100vh - 180px);
+  height: calc(100vh - 120px);
+  background: #f5f7fa;
+  padding: 0;
+  margin: 0;
 }
 
 .posts-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+  background: transparent;
+  height: calc(100vh - 180px);
+  overflow-y: auto;
 }
 
-.loading-more {
-    text-align: center;
-    margin: 20px 0;
+/* 隐藏滚动条但保持功能 */
+.posts-container::-webkit-scrollbar {
+  display: none;
 }
 
-/* 添加搜索框居中样式 */
+.posts-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 搜索栏样式调整 */
 .search-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
-    background-color: #f5f7fa;
-    background: linear-gradient(135deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05));
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  background-color: #f5f7fa;
+  background: linear-gradient(135deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05));
+  margin: 0;
 }
 
 .demo-form-inline {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+/* 固定按钮样式 */
+.create-post-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
 }
 
 :deep(.el-button--primary) {
-    background: linear-gradient(45deg, #7C0A27, #B8860B);
-    border: none;
+  background: linear-gradient(45deg, #7C0A27, #B8860B);
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  box-shadow: 0 4px 12px rgba(124, 10, 39, 0.2);
+  transition: all 0.3s ease;
 }
 
 :deep(.el-button--primary:hover) {
-    background: linear-gradient(45deg, #960C30, #DAA520);
+  background: linear-gradient(45deg, #960C30, #DAA520);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(124, 10, 39, 0.3);
 }
 
-:deep(.el-input__inner:focus) {
-    border-color: #7C0A27;
-}
-
-:deep(.el-select .el-input.is-focus .el-input__inner) {
-    border-color: #7C0A27;
+:deep(.el-button--primary i) {
+  margin-right: 8px;
 }
 </style>

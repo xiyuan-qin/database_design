@@ -1,51 +1,67 @@
 <template>
-  <el-scrollbar class="infinite-scroll-container" v-loading="fullscreenLoading"
-                element-loading-text="加载中..."
-                element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(255, 255, 255, 0.8)">
-    <div class="search-wrapper">
-      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="商品名">
-          <el-input v-model="searchForm.user" placeholder="搜索你需要的商品" clearable />
-        </el-form-item>
-        <el-form-item label="区域">
-          <el-select v-model="searchForm.region" placeholder="选择你的购买区间" clearable>
-            <el-option label="南区" value="south" />
-            <el-option label="北区" value="north" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="发布时间">
-          <el-date-picker v-model="searchForm.date" type="date" placeholder="选择发布时间" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    
-    <div class="posts-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
-      <PostCard
-        v-for="post in posts"
-        :key="post.id"
-        :post="post"
-        @like="handleLike"
-        @comment="handleComment"
-      />
-      <div v-if="loading" class="loading-more">
-        <el-loading></el-loading>
+  <div class="north-view-container">
+    <el-scrollbar class="infinite-scroll-container" v-loading="fullscreenLoading"
+                  element-loading-text="加载中..."
+                  element-loading-spinner="el-icon-loading"
+                  element-loading-background="rgba(255, 255, 255, 0.8)">
+      <div class="search-wrapper">
+        <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+          <el-form-item label="商品名">
+            <el-input v-model="searchForm.user" placeholder="搜索你需要的商品" clearable />
+          </el-form-item>
+          <el-form-item label="区域">
+            <el-select v-model="searchForm.region" placeholder="选择你的购买区间" clearable>
+              <el-option label="南区" value="south" />
+              <el-option label="北区" value="north" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="发布时间">
+            <el-date-picker v-model="searchForm.date" type="date" placeholder="选择发布时间" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </div>
-  </el-scrollbar>
+    
+      <div class="posts-container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10">
+        <PostCard
+          v-for="post in posts"
+          :key="post.id"
+          :post="post"
+          @like="handleLike"
+          @comment="handleComment"
+        />
+        <div v-if="loading" class="loading-more">
+          <el-loading></el-loading>
+        </div>
+      </div>
+      <div class="create-post-button">
+        <el-button type="primary" @click="showCreatePost">
+          <i class="el-icon-plus"></i> 发布新商品
+        </el-button>
+      </div>
+    </el-scrollbar>
+    <CreatePostForm ref="createPostForm" @submit="handlePostSubmit" />
+  </div>
 </template>
 
 <script>
 import PostCard from './components/PostCard.vue';  /* 修改导入路径 */
+import CreatePostForm from './forms/CreatePostForm.vue';
 import demoImg from '@/demoImg/demo.jpg';  // 添加这行
 
 export default {
     name: 'NorthView',
+    props: {
+        isDefaultView: {
+            type: Boolean,
+            default: false
+        }
+    },
     components: {
-        PostCard
+        PostCard,
+        CreatePostForm
     },
     data() {
         return {
@@ -101,6 +117,23 @@ export default {
                     content: content
                 });
             }
+        },
+        showCreatePost() {
+            if (this.isDefaultView) {
+                this.$message({
+                    message: '只有登录才能发布商品！',
+                    type: 'warning',
+                    duration: 2000
+                });
+            } else {
+                this.$refs.createPostForm.show();
+            }
+        },
+        handlePostSubmit(formData) {
+            if (formData.region === 'north') {
+                this.posts.unshift(formData);
+                this.$message.success('发布成功！');
+            }
         }
     },
     mounted() {
@@ -121,13 +154,33 @@ export default {
 
 <style scoped>
 .infinite-scroll-container {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 120px);
+    background: #f5f7fa;
+    padding: 0;
+    overflow: hidden !important;  /* 添加这行 */
+}
+
+:deep(.el-scrollbar__wrap) {
+    overflow-x: hidden !important;  /* 添加这行 */
 }
 
 .posts-container {
-    padding: 20px;
+    height: calc(100vh - 180px);  /* 修改这里 */
+    overflow-y: auto;  /* 添加这行 */
+    padding: 0;
     max-width: 800px;
     margin: 0 auto;
+    background: transparent;
+}
+
+/* 隐藏滚动条但保持功能 */
+.posts-container::-webkit-scrollbar {
+    display: none;  /* 添加这行 */
+}
+
+.posts-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
 }
 
 .loading-more {
@@ -179,8 +232,11 @@ button:hover {
 .search-wrapper {
     display: flex;
     justify-content: center;
-    padding: 20px 0;
+    padding: 10px 0;
     background-color: #f5f7fa;
+    background: linear-gradient(135deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05));
+    margin-bottom: 0;
+    margin: 0;
 }
 
 .demo-form-inline {
@@ -188,5 +244,38 @@ button:hover {
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
+}
+
+.create-post-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+:deep(.el-button--primary) {
+    background: linear-gradient(45deg, #7C0A27, #B8860B);
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(124, 10, 39, 0.2);
+    transition: all 0.3s ease;
+}
+
+:deep(.el-button--primary:hover) {
+    background: linear-gradient(45deg, #960C30, #DAA520);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(124, 10, 39, 0.3);
+}
+
+:deep(.el-button--primary i) {
+    margin-right: 8px;
+}
+
+.north-view-container {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 </style>

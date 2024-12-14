@@ -45,7 +45,7 @@
         </el-button>
         <el-button type="text" @click="showCommentDialog" class="comment-button">
           <i class="el-icon-chat-dot-round"></i>
-          <span class="comment-count">{{ post.comments.length || 2 }}</span>
+          <span class="comment-count">{{ commentCount }}</span>
         </el-button>
       </el-button-group>
     </div>
@@ -217,6 +217,12 @@ export default {
             ]
         };
     },
+    computed: {
+        commentCount() {
+            // 计算总评论数：热门评论数 + 普通评论数
+            return (this.hotComments?.length || 0) + (this.post.comments?.length || 0);
+        }
+    },
     methods: {
         submitComment() {
             if (this.commentText.trim()) {
@@ -283,8 +289,8 @@ export default {
 
 <style scoped>
 .post-card {
-  margin-bottom: 20px;
-  border-radius: 12px;
+  margin-bottom: 0;  /* 修改这里 */
+  border-radius: 0;  /* 修改这里 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;  /* 移除边框 */
   background: linear-gradient(135deg, #ffffff 0%, #FFF5E6 100%);  /* 背景渐变 */

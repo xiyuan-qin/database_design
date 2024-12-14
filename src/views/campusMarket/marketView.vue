@@ -8,7 +8,7 @@
                     </a>
                     <div class="title" @click="toMarket">山东大学青岛二手交易市场</div>
                     <div class="header-right">
-                        <el-dropdown @command="handleCommand">
+                        <el-dropdown @command="handleCommand" class="user-dropdown">
                             <span class="el-dropdown-link">
                                 <i class="el-icon-user"></i>
                                 个人中心
@@ -178,10 +178,13 @@ export default {
 }
 
 .menu-item {
-    background: linear-gradient(90deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05));
-    margin: 10px 15px;
+    height: 50px !important;  /* 增加高度 */
+    line-height: 50px !important;  /* 调整行高 */
+    margin: 8px 15px !important;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    background: linear-gradient(90deg, rgba(124, 10, 39, 0.05), rgba(184, 134, 11, 0.05)) !important;
+    position: relative;
+    overflow: hidden;
 }
 
 .menu-item:hover {
@@ -189,15 +192,19 @@ export default {
 }
 
 .menu-link {
-    display: block;
-    text-decoration: none;
+    height: 100%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;  /* 文字居中 */
+    padding: 0 20px !important;
     color: #7C0A27;
     font-size: 16px;
     font-family: "Microsoft YaHei", sans-serif;
-    padding: 8px 16px;
     border-radius: 4px;
     transition: all 0.3s ease;
     font-weight: 500;
+    position: relative;
+    z-index: 1;
 }
 
 .menu-link:hover {
@@ -292,7 +299,8 @@ export default {
 
 .welcome-container {
     text-align: center;
-    padding: 40px;
+    padding: 0;  /* 修改这里 */
+    margin: 0;   /* 添加这行 */
 }
 
 .welcome-container h1 {
@@ -377,12 +385,26 @@ export default {
 :deep(.el-submenu__title) {
     color: #7C0A27 !important;
     font-weight: bold;
+    height: 60px !important;  /* 增加标题高度 */
+    line-height: 60px !important;
+    font-size: 18px !important;  /* 增大字体 */
+    display: flex ;
+    align-items: center ;
+    padding-left: 25px ;
+    margin-bottom: 10px;
 }
 
 :deep(.el-menu-item-group__title) {
     color: #B8860B;
     font-weight: 500;
     padding: 10px 20px;
+    padding: 15px 25px ;  /* 增加内边距 */
+    font-size: 14px ;
+}
+
+:deep(.el-menu) {
+    background: transparent;
+    padding: 10px 0;  /* 增加整体内边距 */
 }
 
 .el-dropdown-link {
@@ -421,5 +443,101 @@ export default {
 
 :deep(.el-dropdown-menu__item i) {
     color: #B8860B;
+}
+
+/* 修改个人中心下拉菜单样式 */
+.user-dropdown {
+    position: relative;
+    z-index: 1000;
+}
+
+.el-dropdown-link {
+    cursor: pointer;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header-right {
+    margin-left: auto;
+    padding: 0;
+    background: none;
+}
+
+/* 优化左侧菜单样式 */
+.el-menu-item {
+    height: auto;
+    line-height: normal;
+    padding: 0 ;
+    margin: 8px 15px;
+}
+
+.menu-link {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+:deep(.el-menu-item.is-active) {
+    background: rgba(124, 10, 39, 0.1);
+}
+
+:deep(.el-menu-item:hover) {
+    background: rgba(124, 10, 39, 0.05);
+}
+
+:deep(.el-menu) {
+    background: transparent;
+}
+
+/* 添加悬停特效 */
+.menu-item:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(124, 10, 39, 0.1), rgba(184, 134, 11, 0.1));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.menu-item:hover:after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* 添加以下样式来移除白边 */
+.common-layout {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    position: fixed;  /* 添加这行 */
+    width: 100%;     /* 添加这行 */
+    top: 0;          /* 添加这行 */
+    left: 0;         /* 添加这行 */
+}
+
+.el-container {
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;  /* 添加这行 */
+}
+
+:deep(.el-main) {
+    padding: 0 !important;  /* 修改这里，添加!important */
+    margin: 0;
+    background: #f5f7fa;  /* 可选：添加背景色 */
+    overflow-y: auto;  /* 修改这行 */
+    overflow-x: hidden;  /* 添加这行 */
 }
 </style>

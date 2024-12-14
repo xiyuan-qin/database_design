@@ -39,11 +39,11 @@
                     <!-- 显示南区和北区的内容 -->
                     <div v-if="currentSection === 'south'" class="section">
                         <h2>南区商品</h2>
-                        <SouthView />
+                        <SouthView :isDefaultView="true" />
                     </div>
                     <div v-if="currentSection === 'north'" class="section">
                         <h2>北区商品</h2>
-                        <NorthView />
+                        <NorthView :isDefaultView="true" />
                     </div>
                 </el-main>
             </el-container>
