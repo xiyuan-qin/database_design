@@ -19,6 +19,10 @@
                                     <i class="el-icon-user"></i>
                                     个人中心
                                 </el-dropdown-item>
+                                <el-dropdown-item command="posts">
+                                    <i class="el-icon-document"></i>
+                                    贴文管理
+                                </el-dropdown-item>
                                 <el-dropdown-item command="logout">
                                     <i class="el-icon-switch-button"></i>
                                     退出登录
@@ -86,6 +90,8 @@ export default {
                 }).catch(() => {});
             } else if (command === 'profile') {
                 this.$router.push('/profile');
+            } else if (command === 'posts') {
+                this.$router.push('/posts');
             }
         },
         toMarket() {

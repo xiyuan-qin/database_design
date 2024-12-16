@@ -147,6 +147,7 @@ export default {
         setTimeout(() => {
             this.fullscreenLoading = false;
         }, 1000);
+        localStorage.setItem('lastArea', 'south');
     },
     activated() {
         this.fullscreenLoading = true;

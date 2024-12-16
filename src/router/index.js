@@ -85,6 +85,12 @@ const routes = [
     name: 'profile',
     component: () => import('../views/profile/profileView.vue')
   },
+  // 帖子管理的路由
+  {
+    path: '/posts',
+    name: 'PostManagement',
+    component: () => import('@/views/postManagement/PostManagement.vue')
+  },
   // 登录的路由
   {
     path: '/login',
