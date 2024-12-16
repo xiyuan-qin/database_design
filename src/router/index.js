@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DefaultView from '../views/default/DefaultView.vue';
+import ChatIndex from '../views/chat/ChatIndex.vue'
 
 Vue.use(VueRouter)
 
@@ -95,6 +96,15 @@ const routes = [
   {
     path: '/login',
     component: () => import('../views/logIn/logInView.vue')  
+  },
+  // 私信页面的路由
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: ChatIndex,
+    meta: {
+      requiresAuth: true
+    }
   },
   // 默认的路由，重定向到默认页面
   {

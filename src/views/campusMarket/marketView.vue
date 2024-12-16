@@ -12,12 +12,18 @@
                             <span class="el-dropdown-link">
                                 <i class="el-icon-user"></i>
                                 个人中心
+                                <span v-if="unreadCount" class="unread-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </span>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="profile">
                                     <i class="el-icon-user"></i>
                                     个人中心
+                                </el-dropdown-item>
+                                <el-dropdown-item command="chat">
+                                    <i class="el-icon-message"></i>
+                                    私信
+                                    <span v-if="unreadCount" class="menu-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
                                 </el-dropdown-item>
                                 <el-dropdown-item command="posts">
                                     <i class="el-icon-document"></i>
@@ -77,6 +83,11 @@ import 'element-ui/lib/theme-chalk/icon.css';
 
 export default {
     name: 'MarketView',
+    data() {
+        return {
+            unreadCount: 0
+        }
+    },
     methods: {
         handleCommand(command) {
             if (command === 'logout') {
@@ -85,6 +96,9 @@ export default {
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    // TODO: 后端API - 用户登出
+                    // POST /api/auth/logout
+                    // Headers: { Authorization: token }
                     localStorage.removeItem('token');
                     this.$router.push('/default');
                 }).catch(() => {});
@@ -92,12 +106,51 @@ export default {
                 this.$router.push('/profile');
             } else if (command === 'posts') {
                 this.$router.push('/posts');
+            } else if (command === 'chat') {
+                this.$router.push('/chat');
             }
         },
+
+        // TODO: 后端API - 检查未读消息数量
+        // GET /api/chat/unread
+        // Headers: { Authorization: token }
+        // Response: { count: number }
+        async checkUnreadMessages() {
+            try {
+                const response = await fetch('/api/chat/unread')
+                const data = await response.json()
+                this.unreadCount = data.count
+            } catch (error) {
+                console.error('获取未读消息数量失败:', error)
+            }
+        },
+
         toMarket() {
             if (this.$route.path !== '/market') {
                 this.$router.push('/market');
             }
+        }
+    },
+    
+    // TODO: 后端API - 页面加载时的初始化检查
+    // 1. 验证用户登录状态
+    // GET /api/auth/check
+    // Headers: { Authorization: token }
+    
+    // 2. 获取用户基本信息
+    // GET /api/user/info
+    // Headers: { Authorization: token }
+    mounted() {
+        this.checkUnreadMessages()
+        // 每分钟检查一次未读消息
+        this.timer = setInterval(() => {
+            this.checkUnreadMessages()
+        }, 60000)
+    },
+    
+    beforeDestroy() {
+        if (this.timer) {
+            clearInterval(this.timer)
         }
     }
 };
@@ -167,6 +220,7 @@ export default {
     padding: 8px 15px;
     border-radius: 20px;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .el-dropdown-link:hover {
@@ -545,5 +599,28 @@ export default {
     background: #f5f7fa;  /* 可选：添加背景色 */
     overflow-y: auto;  /* 修改这行 */
     overflow-x: hidden;  /* 添加这行 */
+}
+
+/* 添加未读消息红点样式 */
+.unread-badge {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background-color: #f56c6c;
+    color: white;
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: 12px;
+    z-index: 1;
+}
+
+.menu-badge {
+    float: right;
+    background-color: #f56c6c;
+    color: white;
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: 12px;
+    margin-left: 5px;
 }
 </style>
