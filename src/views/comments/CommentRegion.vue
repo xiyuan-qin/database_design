@@ -11,43 +11,41 @@
     @close="handleClose"
   >
     <div class="comment-dialog-content">
-      <!-- 热门评论区 -->
-      <div v-if="hotComments.length" class="hot-comments">
-        <div class="section-title">热门评论</div>
-        <div class="comment-list">
-          <div v-for="comment in hotComments" 
-               :key="'hot-'+comment.id" 
-               class="comment-item hot-comment">
-            <comment-item 
-              :comment="comment"
-              @like="handleCommentLike"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- 普通评论区 -->
-      <div class="normal-comments">
-        <div class="section-title">全部评论</div>
-        <el-scrollbar 
-          ref="scrollbar"
-          class="comment-list"
-          @scroll="handleScroll"
-        >
-          <div v-if="comments.length" class="comment-items">
-            <div v-for="comment in comments" 
-                 :key="comment.id" 
-                 class="comment-item">
+      <div class="comments-wrapper">
+        <!-- 热门评论区 -->
+        <div v-if="hotComments.length" class="hot-comments">
+          <div class="section-title">热门评论</div>
+          <div class="comment-list">
+            <div v-for="comment in hotComments" 
+                :key="'hot-'+comment.id" 
+                class="comment-item hot-comment">
               <comment-item 
                 :comment="comment"
                 @like="handleCommentLike"
               />
             </div>
           </div>
-          <div v-else class="no-comments">暂无评论</div>
-          <div v-if="loading" class="loading">加载中...</div>
-          <div v-if="noMore" class="no-more">没有更多评论了</div>
-        </el-scrollbar>
+        </div>
+
+        <!-- 普通评论区 -->
+        <div class="normal-comments">
+          <div class="section-title">全部评论</div>
+          <div class="comment-list-container">
+            <div v-if="comments.length" class="comment-items">
+              <div v-for="comment in comments" 
+                  :key="comment.id" 
+                  class="comment-item">
+                <comment-item 
+                  :comment="comment"
+                  @like="handleCommentLike"
+                />
+              </div>
+            </div>
+            <div v-else class="no-comments">暂无评论</div>
+            <div v-if="loading" class="loading">加载中...</div>
+            <div v-if="noMore" class="no-more">没有更多评论了</div>
+          </div>
+        </div>
       </div>
 
       <!-- 评论输入区 -->
@@ -76,8 +74,13 @@
 </template>
 
 <script>
+import CommentItem from './CommentItem.vue'  // 添加导入语句
+
 export default {
   name: 'CommentRegion',
+  components: {
+    CommentItem  // 注册组件
+  },
   props: {
     visible: Boolean,
     postId: {
@@ -96,7 +99,38 @@ export default {
       loading: false,
       noMore: false,
       dialogWidth: '50%',
-      dialogTop: '5vh'
+      dialogTop: '5vh',
+      /*
+      // 测试数据，替换为后端接口时删除     
+      // mockComments: [
+      //   {
+      //     id: 1,
+      //     userAvatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+      //     userName: '测试用户1',
+      //     content: '这是一条测试评论，看起来不错！',
+      //     createTime: new Date().toISOString(),
+      //     likes: 15,
+      //     isLiked: false
+      //   },
+      //   {
+      //     id: 2,
+      //     userAvatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+      //     userName: '测试用户2',
+      //     content: '这是另一条测试评论，内容很棒！',
+      //     createTime: new Date(Date.now() - 86400000).toISOString(), // 一天前
+      //     likes: 8,
+      //     isLiked: true
+      //   },
+      //   {
+      //     id: 3,
+      //     userAvatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+      //     userName: '测试用户3',
+      //     content: '这是第三条测试评论，写得真好！',
+      //     createTime: new Date(Date.now() - 172800000).toISOString(), // 两天前
+      //     likes: 23,
+      //     isLiked: false
+      //   }
+      // ]*/
     }
   },
   created() {
@@ -126,11 +160,25 @@ export default {
     },
     async loadHotComments() {
       try {
-        // eslint-disable-next-line no-unused-vars
+        // TODO: 后端接口 - 获取热门评论
+        // 接口参数说明：
+        // postId: 文章ID
+        // 返回数据格式：
+        // {
+        //   code: 200,
+        //   data: [{
+        //     id: number,
+        //     userAvatar: string,
+        //     userName: string,
+        //     content: string,
+        //     createTime: string,
+        //     likes: number,
+        //     isLiked: boolean
+        //   }]
+        // }
         const payload = { postId: this.postId }
-        // const result = await api.getHotComments(payload)
-        // this.hotComments = result.data
-        //在这里添加后端获取热门评论的接口
+        const result = await this.$http.get('/api/comments/hot', { params: payload })
+        this.hotComments = result.data
       } catch (error) {
         this.$message.error('加载热门评论失败')
       }
@@ -140,16 +188,35 @@ export default {
       
       this.loading = true
       try {
-        //在这里添加后端获取评论的接口
-        // eslint-disable-next-line no-unused-vars
+        // TODO: 后端接口 - 获取普通评论列表
+        // 接口参数说明：
+        // postId: 文章ID
+        // page: 页码
+        // pageSize: 每页条数
+        // 返回数据格式：
+        // {
+        //   code: 200,
+        //   data: {
+        //     list: [{
+        //       id: number,
+        //       userAvatar: string,
+        //       userName: string,
+        //       content: string,
+        //       createTime: string,
+        //       likes: number,
+        //       isLiked: boolean
+        //     }],
+        //     total: number
+        //   }
+        // }
         const payload = {
           postId: this.postId,
           page: this.page,
           pageSize: this.pageSize
         }
-        // const result = await api.getComments(payload)
-        // this.comments.push(...result.data)
-        // this.noMore = result.data.length < this.pageSize
+        const result = await this.$http.get('/api/comments', { params: payload })
+        this.comments.push(...result.data.list)
+        this.noMore = result.data.list.length < this.pageSize
         this.page++
       } catch (error) {
         this.$message.error('加载评论失败')
@@ -162,13 +229,29 @@ export default {
       if (!content) return
 
       try {
-        // eslint-disable-next-line no-unused-vars
+        // TODO: 后端接口 - 提交评论
+        // 接口参数说明：
+        // postId: 文章ID
+        // content: 评论内容
+        // 返回数据格式：
+        // {
+        //   code: 200,
+        //   data: {
+        //     id: number,
+        //     userAvatar: string,
+        //     userName: string,
+        //     content: string,
+        //     createTime: string,
+        //     likes: 0,
+        //     isLiked: false
+        //   }
+        // }
         const payload = {
           postId: this.postId,
           content: content
         }
-        // const result = await api.submitComment(payload)
-        // this.comments.unshift(result.data)
+        const result = await this.$http.post('/api/comments', payload)
+        this.comments.unshift(result.data)
         this.commentContent = ''
         this.$emit('comment-added')
         this.$message.success('评论成功')
@@ -178,12 +261,20 @@ export default {
     },
     async handleCommentLike(comment) {
       try {
-        // eslint-disable-next-line no-unused-vars
+        // TODO: 后端接口 - 评论点赞/取消点赞
+        // 接口参数说明：
+        // commentId: 评论ID
+        // action: 'like' | 'unlike'
+        // 返回数据格式：
+        // {
+        //   code: 200,
+        //   data: { success: true }
+        // }
         const payload = {
           commentId: comment.id,
           action: comment.isLiked ? 'unlike' : 'like'
         }
-        // await api.likeComment(payload)
+        await this.$http.post('/api/comments/like', payload)
         comment.isLiked = !comment.isLiked
         comment.likes += comment.isLiked ? 1 : -1
       } catch (error) {
@@ -256,31 +347,26 @@ export default {
   background: #fff;
 }
 
-.comment-list {
+.comments-wrapper {
   flex: 1;
   overflow-y: auto;
-  background: #fff;
+  padding: 16px 16px 0;
 }
 
-/* 确保内容区域背景色 */
+/* 移除之前的 comment-list 相关样式 */
 .hot-comments,
 .normal-comments {
   background: #fff;
-  padding: 16px;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
   margin-bottom: 16px;
-  padding-left: 8px;
-  border-left: 3px solid #7C0A27;
 }
 
-.comment-list {
-  max-height: calc(60vh - 180px);
-  overflow-y: auto;
+.comment-list-container {
+  max-height: none;
+  overflow: visible;
+}
+
+.comment-items {
+  margin-bottom: 16px;
 }
 
 .comment-item {
@@ -314,8 +400,10 @@ export default {
   padding: 16px;
   background: white;
   border-top: 1px solid #ebeef5;
+  margin-top: auto;
   position: sticky;
   bottom: 0;
+  z-index: 1;
 }
 
 .comment-actions {
@@ -374,13 +462,21 @@ export default {
 }
 
 /* 滚动条美化 */
-:deep(.el-scrollbar__thumb) {
+.comments-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comments-wrapper::-webkit-scrollbar-thumb {
   background: rgba(124, 10, 39, 0.3);
   border-radius: 20px;
 }
 
-:deep(.el-scrollbar__thumb:hover) {
+.comments-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(124, 10, 39, 0.5);
+}
+
+.comments-wrapper::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* 优化弹窗动画 */
